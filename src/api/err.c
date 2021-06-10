@@ -43,32 +43,35 @@
 #include "lwip/errno.h"
 
 #if !NO_SYS
-/** Table to quickly map an lwIP error (err_t) to a socket error
-  * by using -err as an index */
+/**
+ * 错误表
+*/
 static const int err_to_errno_table[] = {
-  0,             /* ERR_OK          0      No error, everything OK. */
-  ENOMEM,        /* ERR_MEM        -1      Out of memory error.     */
-  ENOBUFS,       /* ERR_BUF        -2      Buffer error.            */
-  EWOULDBLOCK,   /* ERR_TIMEOUT    -3      Timeout                  */
-  EHOSTUNREACH,  /* ERR_RTE        -4      Routing problem.         */
-  EINPROGRESS,   /* ERR_INPROGRESS -5      Operation in progress    */
-  EINVAL,        /* ERR_VAL        -6      Illegal value.           */
-  EWOULDBLOCK,   /* ERR_WOULDBLOCK -7      Operation would block.   */
-  EADDRINUSE,    /* ERR_USE        -8      Address in use.          */
-  EALREADY,      /* ERR_ALREADY    -9      Already connecting.      */
-  EISCONN,       /* ERR_ISCONN     -10     Conn already established.*/
-  ENOTCONN,      /* ERR_CONN       -11     Not connected.           */
-  -1,            /* ERR_IF         -12     Low-level netif error    */
-  ECONNABORTED,  /* ERR_ABRT       -13     Connection aborted.      */
-  ECONNRESET,    /* ERR_RST        -14     Connection reset.        */
-  ENOTCONN,      /* ERR_CLSD       -15     Connection closed.       */
-  EIO            /* ERR_ARG        -16     Illegal argument.        */
+    0,            /* ERR_OK          0      No error, everything OK. 正确 */
+    ENOMEM,       /* ERR_MEM        -1      Out of memory error.  内存溢出   */
+    ENOBUFS,      /* ERR_BUF        -2      Buffer error.        字符串错误    */
+    EWOULDBLOCK,  /* ERR_TIMEOUT    -3      Timeout              超时    */
+    EHOSTUNREACH, /* ERR_RTE        -4      Routing problem.    路由错误     */
+    EINPROGRESS,  /* ERR_INPROGRESS -5      Operation in progress 操作正在处理中    */
+    EINVAL,       /* ERR_VAL        -6      Illegal value.    非法的数据       */
+    EWOULDBLOCK,  /* ERR_WOULDBLOCK -7      Operation would block.  操作被阻塞  */
+    EADDRINUSE,   /* ERR_USE        -8      Address in use.     地址已经被使用     */
+    EALREADY,     /* ERR_ALREADY    -9      Already connecting.  已经连接     */
+    EISCONN,      /* ERR_ISCONN     -10     Conn already established.连接已经建立 */
+    ENOTCONN,     /* ERR_CONN       -11     Not connected.       没有连接    */
+    -1,           /* ERR_IF         -12     Low-level netif error 低级别网络接口错误   */
+    ECONNABORTED, /* ERR_ABRT       -13     Connection aborted. 连接被终止     */
+    ECONNRESET,   /* ERR_RST        -14     Connection reset.   连接被复位     */
+    ENOTCONN,     /* ERR_CLSD       -15     Connection closed.    连接被关闭   */
+    EIO           /* ERR_ARG        -16     Illegal argument.  非法的参数      */
 };
-
-int
-err_to_errno(err_t err)
+/**
+ * 将返回值转换为错误码
+*/
+int err_to_errno(err_t err)
 {
-  if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_to_errno_table))) {
+  if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_to_errno_table)))
+  {
     return EIO;
   }
   return err_to_errno_table[-err];
@@ -76,25 +79,27 @@ err_to_errno(err_t err)
 #endif /* !NO_SYS */
 
 #ifdef LWIP_DEBUG
-
+/**
+ * 错误字符串
+*/
 static const char *err_strerr[] = {
-  "Ok.",                    /* ERR_OK          0  */
-  "Out of memory error.",   /* ERR_MEM        -1  */
-  "Buffer error.",          /* ERR_BUF        -2  */
-  "Timeout.",               /* ERR_TIMEOUT    -3  */
-  "Routing problem.",       /* ERR_RTE        -4  */
-  "Operation in progress.", /* ERR_INPROGRESS -5  */
-  "Illegal value.",         /* ERR_VAL        -6  */
-  "Operation would block.", /* ERR_WOULDBLOCK -7  */
-  "Address in use.",        /* ERR_USE        -8  */
-  "Already connecting.",    /* ERR_ALREADY    -9  */
-  "Already connected.",     /* ERR_ISCONN     -10 */
-  "Not connected.",         /* ERR_CONN       -11 */
-  "Low-level netif error.", /* ERR_IF         -12 */
-  "Connection aborted.",    /* ERR_ABRT       -13 */
-  "Connection reset.",      /* ERR_RST        -14 */
-  "Connection closed.",     /* ERR_CLSD       -15 */
-  "Illegal argument."       /* ERR_ARG        -16 */
+    "Ok.",                    /* ERR_OK          0  */
+    "Out of memory error.",   /* ERR_MEM        -1  */
+    "Buffer error.",          /* ERR_BUF        -2  */
+    "Timeout.",               /* ERR_TIMEOUT    -3  */
+    "Routing problem.",       /* ERR_RTE        -4  */
+    "Operation in progress.", /* ERR_INPROGRESS -5  */
+    "Illegal value.",         /* ERR_VAL        -6  */
+    "Operation would block.", /* ERR_WOULDBLOCK -7  */
+    "Address in use.",        /* ERR_USE        -8  */
+    "Already connecting.",    /* ERR_ALREADY    -9  */
+    "Already connected.",     /* ERR_ISCONN     -10 */
+    "Not connected.",         /* ERR_CONN       -11 */
+    "Low-level netif error.", /* ERR_IF         -12 */
+    "Connection aborted.",    /* ERR_ABRT       -13 */
+    "Connection reset.",      /* ERR_RST        -14 */
+    "Connection closed.",     /* ERR_CLSD       -15 */
+    "Illegal argument."       /* ERR_ARG        -16 */
 };
 
 /**
@@ -103,10 +108,14 @@ static const char *err_strerr[] = {
  * @param err an lwip internal err_t
  * @return a string representation for err
  */
+/**
+ * 将错误值转换为错误字符串
+*/
 const char *
 lwip_strerr(err_t err)
 {
-  if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_strerr))) {
+  if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_strerr)))
+  {
     return "Unknown error.";
   }
   return err_strerr[-err];
